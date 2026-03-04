@@ -2,12 +2,60 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mi Primera Página</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hola Mundo con Estilo</title>
+    <style>
+        /* Aquí empieza el CSS */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #2d3436;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #636e72;
+        }
+
+        .boton {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #0984e3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .boton:hover {
+            background-color: #74b9ff;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>¡Hola, mundo!</h1>
-    <p>Este es mi primer sitio web creado con HTML.</p>
+    <div class="card">
+        <h1>¡Hola, mundo!</h1>
+        <p>Este sitio tiene un diseño aplicado con CSS.</p>
+        <a href="#" class="boton">Haz clic aquí</a>
+    </div>
 
 </body>
 </html>
