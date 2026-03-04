@@ -3,181 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Olá Mundo Brasil | Universo Digital</title>
+    <title>Olá Mundo Brasil | Experiência Imersiva</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --verde-brasil: #009739;
-            --amarelo-brasil: #fedd00;
-            --azul-espacial: #020617;
+            --verde: #009739;
+            --amarelo: #fedd00;
+            --azul-sky: #00b4d8;
+            --bg-deep: #020617;
         }
 
-        /* CONFIGURAÇÃO DO ESPAÇO */
-        body {
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: white;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background: radial-gradient(circle at center, #0f172a 0%, var(--azul-espacial) 100%);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             overflow: hidden;
-            color: white;
+            perspective: 1000px;
         }
 
-        /* ESTRELAS QUE PISCAM */
-        .stars-wrapper {
-            position: absolute;
+        /* --- FUNDO GALÁXIA --- */
+        .universe {
+            position: fixed;
             inset: 0;
-            z-index: 0;
+            background: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
+            z-index: -1;
         }
 
-        .stars {
-            width: 2px;
-            height: 2px;
+        /* Estrelas Geradas Dinamicamente */
+        .star {
+            position: absolute;
             background: white;
-            position: absolute;
             border-radius: 50%;
-            /* Gerando várias estrelas com sombras */
-            box-shadow: 15vw 10vh #fff, 35vw 45vh #fff, 70vw 20vh #fff, 10vw 80vh #fff, 
-                        90vw 10vh #fff, 50vw 50vh #fff, 80vw 85vh #fff, 25vw 90vh #fff;
-            animation: twinkle 5s infinite ease-in-out;
+            opacity: 0.5;
+            animation: twinkle var(--duration) infinite ease-in-out;
         }
 
-        /* EFEITO DE COMETA (ESTRELA CADENTE) */
-        .comet {
+        /* Estrela Cadente */
+        .shooting-star {
             position: absolute;
-            top: 0;
+            top: -10px;
             left: 50%;
             width: 2px;
-            height: 80px;
-            background: linear-gradient(to bottom, rgba(255,255,255,0.8), transparent);
+            height: 100px;
+            background: linear-gradient(to bottom, white, transparent);
             transform: rotate(45deg);
-            animation: shoot 8s infinite ease-in;
+            animation: shoot 10s infinite linear;
             opacity: 0;
         }
 
-        /* NEBULOSA BRASILEIRA */
+        /* Nebulosa de Brilho */
         .nebula {
             position: absolute;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(0, 151, 57, 0.15) 0%, transparent 70%);
-            filter: blur(60px);
-            z-index: 0;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 151, 57, 0.1) 0%, transparent 70%);
+            filter: blur(100px);
+            pointer-events: none;
         }
 
-        /* CARTÃO GLASSMORPHISM PREMIUM */
+        /* --- CARTÃO 3D GLASSMORPHISM --- */
+        .container-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
         .card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 50px 40px;
             border-radius: 40px;
+            padding: 60px 40px;
             text-align: center;
-            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.6);
-            max-width: 400px;
-            z-index: 10;
-            animation: float 6s ease-in-out infinite;
+            width: 400px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 40px;
+            background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.15), transparent 50%);
+            pointer-events: none;
         }
 
         .terra {
-            font-size: 100px;
+            font-size: 110px;
             display: block;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 30px rgba(0, 151, 57, 0.5));
-            animation: rotation 15s linear infinite;
-            cursor: pointer;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 0 40px rgba(0, 151, 57, 0.4));
+            animation: rotateTerra 20s linear infinite, float 6s ease-in-out infinite;
+            transform: translateZ(50px); /* Salta do cartão */
         }
 
         .bandeiras {
-            font-size: 18px;
-            letter-spacing: 12px;
-            margin-bottom: 20px;
-            opacity: 0.8;
+            font-size: 14px;
+            letter-spacing: 15px;
+            text-indent: 15px;
+            margin-bottom: 15px;
+            opacity: 0.6;
+            font-weight: 300;
         }
 
         h1 {
             font-size: 3rem;
-            margin: 0;
-            background: linear-gradient(135deg, #fff 40%, var(--verde-brasil), var(--amarelo-brasil));
+            font-weight: 800;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #fff 30%, var(--verde), var(--amarelo));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 900;
-            letter-spacing: -2px;
+            margin-bottom: 15px;
+            transform: translateZ(30px);
         }
 
         p {
             color: #94a3b8;
             font-size: 1.1rem;
             line-height: 1.6;
-            margin-top: 15px;
+            margin-bottom: 35px;
+            font-weight: 300;
         }
 
-        /* BOTÃO COM EFEITO BOUNCE */
-        .boton {
-            margin-top: 35px;
-            padding: 18px 45px;
-            background: linear-gradient(45deg, var(--verde-brasil), #00c84b);
+        /* --- BOTÃO NEON --- */
+        .btn {
+            background: linear-gradient(45deg, var(--verde), #00c84b);
             color: white;
             text-decoration: none;
+            padding: 18px 45px;
             border-radius: 100px;
             font-weight: 800;
-            display: inline-block;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 15px 30px rgba(0, 151, 57, 0.4);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            font-size: 0.85rem;
+            display: inline-block;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 20px rgba(0, 151, 57, 0.3);
             border: none;
+            cursor: pointer;
         }
 
-        .boton:hover {
-            transform: scale(1.1) translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 151, 57, 0.6);
-            filter: brightness(1.2);
+        .btn:hover {
+            transform: scale(1.1) translateY(-5px) translateZ(20px);
+            box-shadow: 0 20px 40px rgba(0, 151, 57, 0.5);
+            filter: brightness(1.1);
         }
 
-        /* ANIMAÇÕES */
+        /* --- ANIMAÇÕES --- */
         @keyframes twinkle {
             0%, 100% { opacity: 0.3; transform: scale(1); }
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-25px) rotate(1.5deg); }
+        @keyframes rotateTerra {
+            from { transform: translateZ(50px) rotate(0deg); }
+            to { transform: translateZ(50px) rotate(360deg); }
         }
 
-        @keyframes rotation {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        @keyframes float {
+            0%, 100% { margin-top: 0; }
+            50% { margin-top: -20px; }
         }
 
         @keyframes shoot {
             0% { transform: translateX(100vw) translateY(-100vh) rotate(45deg); opacity: 1; }
-            15% { transform: translateX(-100vw) translateY(100vh) rotate(45deg); opacity: 0; }
+            10% { transform: translateX(-100vw) translateY(100vh) rotate(45deg); opacity: 0; }
             100% { opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div class="stars-wrapper">
-        <div class="stars"></div>
-        <div class="stars" style="animation-delay: -2s; transform: rotate(90deg);"></div>
-        <div class="comet"></div>
-    </div>
-
+    <div class="universe" id="universe"></div>
     <div class="nebula"></div>
+    <div class="shooting-star"></div>
 
-    <div class="card">
-        <span class="terra">🌎</span>
-        <div class="bandeiras">🇧🇷 🇧🇷 🇧🇷</div>
-        <h1>Olá, Mundo!</h1>
-        <p>Criando experiências incríveis com a energia do Brasil e a imensidão do universo.</p>
-        <a href="#" class="boton">Explorar Agora</a>
+    <div class="container-3d" id="scene">
+        <div class="card" id="card">
+            <span class="terra">🌎</span>
+            <div class="bandeiras">🇧🇷🇧🇷🇧🇷</div>
+            <h1>Olá, Mundo!</h1>
+            <p>O design do futuro encontra a alma brasileira na imensidão do cosmos.</p>
+            <a href="#" class="btn">Explorar Agora</a>
+        </div>
     </div>
 
+    <script>
+        // Criar estrelas aleatórias
+        const universe = document.getElementById('universe');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.top = Math.random() * 100 + 'vh';
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+            universe.appendChild(star);
+        }
+
+        // Efeito Tilt 3D
+        const scene = document.getElementById('scene');
+        const card = document.getElementById('card');
+
+        document.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            scene.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+
+            // Atualizar luz do cartão
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+
+        // Resetar ao sair
+        document.addEventListener('mouseleave', () => {
+            scene.style.transform = `rotateY(0deg) rotateX(0deg)`;
+        });
+    </script>
 </body>
 </html>
