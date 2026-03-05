@@ -1,287 +1,157 @@
 <!DOCTYPE html>
-
 <html lang="pt-br">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Olá Mundo Brasil | Elite Universe</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;800&display=swap" rel="stylesheet">
-
     <style>
-
         :root {
-
             --verde: #009739;
-
             --amarelo: #fedd00;
-
             --bg-deep: #020617;
-
         }
-
-
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
-
-
         body {
-
             background-color: var(--bg-deep);
-
             color: white;
-
             height: 100vh;
-
             display: flex;
-
             justify-content: center;
-
             align-items: center;
-
             overflow: hidden;
-
             perspective: 1000px;
-
         }
-
-
 
         /* FUNDO DINÂMICO */
-
         .universe { position: fixed; inset: 0; background: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%); z-index: -1; }
-
         .star { position: absolute; background: white; border-radius: 50%; opacity: 0.5; animation: twinkle var(--duration) infinite ease-in-out; }
 
-
-
         /* CARTÃO 3D COM GLASSMORPHISM */
-
         .container-3d { transform-style: preserve-3d; transition: transform 0.1s ease-out; }
-
         .card {
-
             background: rgba(255, 255, 255, 0.03);
-
             backdrop-filter: blur(25px);
-
             -webkit-backdrop-filter: blur(25px);
-
             border: 1px solid rgba(255, 255, 255, 0.1);
-
             border-radius: 40px;
-
             padding: 60px 40px;
-
             text-align: center;
-
             width: 400px;
-
             box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
-
             position: relative;
-
             transform-style: preserve-3d;
-
+            transition: all 0.8s ease-in; /* Transição para o efeito de decolagem */
         }
-
-
 
         /* LUZ QUE SEGUE O MOUSE */
-
         .card::after {
-
             content: ""; position: absolute; inset: 0; border-radius: 40px;
-
             background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.15), transparent 50%);
-
             pointer-events: none;
-
         }
-
-
 
         .terra {
-
             font-size: 110px; display: block; margin-bottom: 30px;
-
             filter: drop-shadow(0 0 40px rgba(0, 151, 57, 0.4));
-
             animation: rotateTerra 20s linear infinite, float 6s ease-in-out infinite;
-
             transform: translateZ(60px);
-
         }
-
-
 
         h1 {
-
             font-size: 3rem; font-weight: 800; letter-spacing: -2px;
-
             background: linear-gradient(135deg, #fff 30%, var(--verde), var(--amarelo));
-
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-
             margin-bottom: 15px; transform: translateZ(30px);
-
         }
-
-
 
         p { color: #94a3b8; font-size: 1.1rem; line-height: 1.6; margin-bottom: 35px; font-weight: 300; }
 
-
-
         /* BOTÃO INTERATIVO */
-
         .btn {
-
             background: linear-gradient(45deg, var(--verde), #00c84b);
-
             color: white; text-decoration: none; padding: 18px 45px;
-
             border-radius: 100px; font-weight: 800; text-transform: uppercase;
-
             letter-spacing: 2px; font-size: 0.85rem; display: inline-block;
-
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
             box-shadow: 0 10px 20px rgba(0, 151, 57, 0.3);
-
             border: none; cursor: pointer;
-
         }
 
-
-
         .btn:hover { transform: scale(1.1) translateY(-5px) translateZ(20px); box-shadow: 0 20px 40px rgba(0, 151, 57, 0.5); }
-
         .btn:active { transform: scale(0.95); }
 
-
-
         /* ANIMAÇÕES */
-
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
-
         @keyframes rotateTerra { from { transform: translateZ(60px) rotate(0deg); } to { transform: translateZ(60px) rotate(360deg); } }
-
         @keyframes float { 0%, 100% { margin-top: 0; } 50% { margin-top: -20px; } }
-
     </style>
-
 </head>
-
 <body>
-
-
 
     <div class="universe" id="universe"></div>
 
-
-
     <div class="container-3d" id="scene">
-
         <div class="card" id="card">
-
             <span class="terra">🌎</span>
-
             <h1>Olá, Mundo!</h1>
-
             <p>O design do futuro encontra a alma brasileira na imensidão do cosmos.</p>
-
             <button class="btn" id="exploreBtn">Explorar Agora</button>
-
         </div>
-
     </div>
-
-
 
     <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
 
-
-
     <script>
-
         // Gerador de Estrelas
-
         const universe = document.getElementById('universe');
-
         for (let i = 0; i < 120; i++) {
-
             const star = document.createElement('div');
-
             star.className = 'star';
-
             const size = Math.random() * 3 + 'px';
-
             star.style.width = size; star.style.height = size;
-
             star.style.top = Math.random() * 100 + 'vh';
-
             star.style.left = Math.random() * 100 + 'vw';
-
             star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
-
             universe.appendChild(star);
-
         }
 
-
-
-        // Controle 3D e Som
-
+        // Controle 3D, Som e Redirecionamento
         const scene = document.getElementById('scene');
-
         const card = document.getElementById('card');
-
         const btn = document.getElementById('exploreBtn');
-
         const sound = document.getElementById('clickSound');
 
-
-
         document.addEventListener('mousemove', (e) => {
-
             const xAxis = (window.innerWidth / 2 - e.pageX) / 20;
-
             const yAxis = (window.innerHeight / 2 - e.pageY) / 20;
-
             scene.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
 
-
-
             const rect = card.getBoundingClientRect();
-
             card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
-
             card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
-
         });
-
-
 
         btn.addEventListener('click', () => {
-
+            // Toca o som futurista
             sound.currentTime = 0;
-
             sound.play();
 
-            btn.innerText = "🚀 Iniciando...";
+            // Feedback visual no botão
+            btn.innerText = "🚀 Decolando...";
+            btn.style.filter = "brightness(1.5)";
+            
+            // Efeito de decolagem espacial no card
+            card.style.opacity = "0";
+            card.style.transform = "translateZ(600px) scale(0.3) rotateX(20deg)";
 
-            setTimeout(() => { btn.innerText = "Explorar Agora"; }, 2000);
-
+            // Redireciona para o site sobre o Brasil após a animação
+            setTimeout(() => {
+                window.location.href = "https://www.visitbrasil.com/pt/";
+            }, 1000);
         });
-
     </script>
-
 </body>
-
 </html>
